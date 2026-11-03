@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heeloop Pose 웹 미리보기</title>
+<style>
+  :root { color-scheme: light; --accent: #f26100; --bg: #f6f4f1; --line: #ddd; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: -apple-system, "Segoe UI", "Malgun Gothic", sans-serif; background: var(--bg); color: #222; }
+  #app { display: flex; height: 100%; }
+  #view { position: relative; flex: 1; min-width: 0; background: #fff; }
+  #canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+  #cameras { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+  #capture { position: absolute; top: 12px; right: 12px; width: 56px; height: 56px; border-radius: 50%; border: 3px solid var(--accent); background: #fff; font-size: 24px; cursor: pointer; }
+  #hint { position: absolute; top: 12px; left: 12px; font-size: 12px; color: #777; background: rgba(255,255,255,.85); padding: 6px 10px; border-radius: 8px; }
+  #toast { position: absolute; top: 76px; left: 50%; transform: translateX(-50%); background: rgba(30,30,30,.9); color: #fff; padding: 8px 14px; border-radius: 999px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  #toast.show { opacity: 1; }
+  aside { width: 360px; background: var(--bg); border-left: 1px solid var(--line); padding: 14px; overflow-y: auto; }
+  h1 { font-size: 15px; margin: 0 0 10px; }
+  button { font: inherit; font-size: 13px; padding: 6px 10px; border: 1px solid #ccc; background: #fff; border-radius: 8px; cursor: pointer; }
+  button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+  .tabs .tab { flex: 1; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .row { display: grid; grid-template-columns: 64px 1fr 48px; align-items: center; gap: 8px; font-size: 13px; margin: 8px 0; }
+  .row output { text-align: right; font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .hidden { display: none; }
+  .note { font-size: 12px; color: #777; margin-top: 10px; }
+  @media (max-width: 760px) {
+    #app { flex-direction: column; }
+    #view { flex: none; height: 55%; }
+    aside { width: 100%; flex: 1; border-left: 0; border-top: 1px solid var(--line); }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="view">
+    <canvas id="canvas"></canvas>
+    <div id="hint">드래그: 회전 · 휠/핀치: 확대 · 우클릭 드래그: 이동 · 인형 클릭: 관절 선택</div>
+    <button id="capture" title="PNG로 캡처">📷</button>
+    <div id="cameras"></div>
+    <div id="toast"></div>
+  </div>
+  <aside>
+    <h1>Heeloop Pose · 웹 미리보기</h1>
+    <div class="tabs">
+      <button class="tab active" data-tab="joint">관절</button>
+      <button class="tab" data-tab="body">체형</button>
+      <button class="tab" data-tab="preset">포즈</button>
+    </div>
+
+    <section class="pane" id="pane-joint">
+      <div class="chips" id="joint-chips"></div>
+      <div id="joint-sliders"></div>
+    </section>
+
+    <section class="pane hidden" id="pane-body">
+      <div class="chips" id="body-types"></div>
+      <div id="body-sliders"></div>
+      <button id="reset-body">비율 초기화</button>
+    </section>
+
+    <section class="pane hidden" id="pane-preset">
+      <div class="chips" id="presets"></div>
+      <div id="root-slider"></div>
+    </section>
+
+    <p class="note">iPhone 앱과 같은 체형 비율·관절 범위를 쓰는 미리보기입니다.
+      📷 버튼은 사진 앨범 대신 PNG 파일로 내려받습니다.</p>
+  </aside>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

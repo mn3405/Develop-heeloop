@@ -4,3 +4,4 @@ DerivedData/
 build/
 *.xcodeproj
 HeeloopPose/Info.plist
+node_modules/
